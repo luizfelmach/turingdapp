@@ -5,4 +5,4 @@ export interface User {
   addr: string;
 }
 
-export type UserWithBalance = User & { balance: BigInt };
+export type UserWithBalance = User & { balance: bigint };

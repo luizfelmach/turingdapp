@@ -13,14 +13,14 @@ export default function VotingList() {
   const { address } = useAccount();
   const { writeContract } = useWriteContract();
   const [amounts, setAmounts] = useState<{ [key: string]: string }>({});
-  let { data: isVotingActiveContract, isLoading: loadingVotingActive } =
+  const { data: isVotingActiveContract, isLoading: loadingVotingActive } =
     useReadContract({
       address: contractAddr,
       abi: contract.abi,
       functionName: "votingActive",
     });
 
-  let {
+  const {
     data: usersContract,
     isLoading: loadingUsers,
     refetch,

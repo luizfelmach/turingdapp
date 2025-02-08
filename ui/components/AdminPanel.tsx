@@ -95,8 +95,8 @@ function ImportUsersCSV() {
       .map((line) => line.trim())
       .filter(Boolean);
 
-    let codenamesArray: string[] = [];
-    let addressesArray: string[] = [];
+    const codenamesArray: string[] = [];
+    const addressesArray: string[] = [];
 
     for (const line of lines) {
       const [codename, addr] = line.split(",").map((item) => item.trim());
@@ -126,7 +126,7 @@ function ImportUsersCSV() {
 }
 
 function UsersRegistered() {
-  let { data: usersContract, isLoading: loadingUsers } = useReadContract({
+  const { data: usersContract, isLoading: loadingUsers } = useReadContract({
     address: contractAddr,
     abi: contract.abi,
     functionName: "getUsers",
@@ -159,7 +159,7 @@ function IssueToken() {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const { writeContract } = useWriteContract();
 
-  let { data: usersContract, isLoading: loadingUsers } = useReadContract({
+  const { data: usersContract, isLoading: loadingUsers } = useReadContract({
     address: contractAddr,
     abi: contract.abi,
     functionName: "getUsers",
@@ -168,7 +168,7 @@ function IssueToken() {
   const users = usersContract as User[];
 
   function handleIssueToken() {
-    let issueAmount = +amount * 10 ** 18;
+    const issueAmount = +amount * 10 ** 18;
     console.log(issueAmount, selectedUser);
     writeContract({
       abi: contract.abi,
@@ -217,7 +217,7 @@ function IssueToken() {
 
 function ToggleVoting() {
   const { writeContract } = useWriteContract();
-  const { data: isVotingActive, isLoading } = useReadContract({
+  const { data: isVotingActive } = useReadContract({
     address: contractAddr,
     abi: contract.abi,
     functionName: "votingActive",

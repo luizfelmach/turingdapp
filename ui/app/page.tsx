@@ -15,7 +15,7 @@ import { contractAddr } from "@/lib/config";
 export default function Home() {
   const { isConnected, address } = useAccount();
 
-  let { data: isAdminContract } = useReadContract({
+  const { data: isAdminContract } = useReadContract({
     address: contractAddr,
     abi: contract.abi,
     account: address,

@@ -13,7 +13,7 @@ import { contractAddr, UserWithBalance } from "@/lib/config";
 import { useReadContract } from "wagmi";
 
 export default function RankingList() {
-  let { data: usersContract, isLoading: loadingUsers } = useReadContract({
+  const { data: usersContract, isLoading: loadingUsers } = useReadContract({
     address: contractAddr,
     abi: contract.abi,
     functionName: "getUsersWithBalance",

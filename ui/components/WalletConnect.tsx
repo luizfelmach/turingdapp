@@ -84,7 +84,7 @@ function WalletOption({ connector, onClick }: WalletOptionProps) {
       try {
         const provider = await connector.getProvider();
         setReady(!!provider);
-      } catch (error) {
+      } catch {
         setReady(false);
       }
     })();
