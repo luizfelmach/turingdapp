@@ -1,4 +1,4 @@
-export const contractAddr = "0x225455675fa8b65c4df3402009De7C47c6B19377";
+export const contractAddr = "0x8A768b1a8755496DF5e7f557ce3d1289a82B690d";
 
 export interface User {
   codename: string;

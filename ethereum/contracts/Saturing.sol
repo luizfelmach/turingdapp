@@ -81,6 +81,9 @@ contract Saturing is ERC20 {
     }
 
     function getUsersToVote() public view returns (User[] memory) {
+        if (!usersRegistered[msg.sender]) {
+            return new User[](0);
+        }
         uint256 count = 0;
         for (uint256 i = 0; i < users.length; i++) {
             if (
