@@ -162,6 +162,27 @@ contract Saturing is ERC20 {
         votingActive = !votingActive;
     }
 
+    function resetSystem() public onlyOwnerOrTeacher {
+        for (uint256 i = 0; i < users.length; i++) {
+            _burn(users[i].addr, balanceOf(users[i].addr));
+        }
+
+        for (uint256 i = 0; i < users.length; i++) {
+            for (uint256 j = 0; j < users.length; j++) {
+                delete voted[users[i].addr][users[j].codename];
+            }
+        }
+
+        for (uint256 i = 0; i < users.length; i++) {
+            delete codenames[users[i].codename];
+            delete usersRegistered[users[i].addr];
+        }
+
+        delete users;
+
+        votingActive = true;
+    }
+
     modifier onlyTeacher() {
         require(msg.sender == teacher, "Somente professor.");
         _;

@@ -18,6 +18,13 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { useReadContract, useWriteContract } from "wagmi";
 import { contractAddr, User } from "@/lib/config";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "./ui/dialog";
 
 export default function AdminPanel() {
   return (
@@ -57,6 +64,78 @@ export default function AdminPanel() {
           <UsersRegistered />
         </CardContent>
       </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-red-600">
+            Área de Perigo: Resetar Sistema
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ResetSystem />
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+function ResetSystem() {
+  const [open, setOpen] = useState(false);
+  const [confirmation, setConfirmation] = useState("");
+  const { writeContract } = useWriteContract();
+
+  function handleReset() {
+    if (confirmation === "eu quero resetar o sistema e estou ciente") {
+      writeContract({
+        abi: contract.abi,
+        address: contractAddr,
+        functionName: "resetSystem",
+        args: [],
+      });
+      setOpen(false);
+      setConfirmation("");
+    }
+  }
+
+  return (
+    <div>
+      <Button
+        className="bg-red-600 hover:bg-red-700 w-full"
+        onClick={() => setOpen(true)}
+      >
+        Resetar Sistema
+      </Button>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="text-red-600">Tem certeza?</DialogTitle>
+          </DialogHeader>
+          <p>
+            Esta ação irá redefinir completamente o sistema. Para confirmar,
+            digite exatamente:
+          </p>
+          <Label>eu quero resetar o sistema e estou ciente</Label>
+          <Input
+            value={confirmation}
+            onChange={(e) => setConfirmation(e.target.value)}
+          />
+          <DialogFooter>
+            <Button
+              variant="destructive"
+              onClick={handleReset}
+              disabled={
+                confirmation !== "eu quero resetar o sistema e estou ciente"
+              }
+            >
+              Confirmar Reset
+            </Button>
+            <Button variant="secondary" onClick={() => setOpen(false)}>
+              Cancelar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
