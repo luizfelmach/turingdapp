@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/table";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { useReadContract, useWriteContract } from "wagmi";
+import { useAccount, useReadContract, useWriteContract } from "wagmi";
 import { contractAddr, User } from "@/lib/config";
 import {
   Dialog,
@@ -80,6 +80,17 @@ export default function AdminPanel() {
 }
 
 function ResetSystem() {
+  const { address } = useAccount();
+
+  const { data: isAdminContract } = useReadContract({
+    address: contractAddr,
+    abi: contract.abi,
+    account: address,
+    functionName: "isAdmin",
+  });
+
+  const isAdmin = isAdminContract as boolean;
+
   const [open, setOpen] = useState(false);
   const [confirmation, setConfirmation] = useState("");
   const { writeContract } = useWriteContract();
@@ -102,6 +113,7 @@ function ResetSystem() {
       <Button
         className="bg-red-600 hover:bg-red-700 w-full"
         onClick={() => setOpen(true)}
+        disabled={!isAdmin}
       >
         Resetar Sistema
       </Button>
@@ -141,6 +153,17 @@ function ResetSystem() {
 }
 
 function ImportUsersCSV() {
+  const { address } = useAccount();
+
+  const { data: isAdminContract } = useReadContract({
+    address: contractAddr,
+    abi: contract.abi,
+    account: address,
+    functionName: "isAdmin",
+  });
+
+  const isAdmin = isAdminContract as boolean;
+
   const [file, setFile] = useState<File | null>(null);
   const [count, setCount] = useState<number | null>(null);
   const { writeContract } = useWriteContract();
@@ -195,9 +218,14 @@ function ImportUsersCSV() {
 
   return (
     <div className="space-y-4">
-      <Input type="file" accept=".csv" onChange={handleFileChange} />
+      <Input
+        type="file"
+        accept=".csv"
+        onChange={handleFileChange}
+        disabled={!isAdmin}
+      />
       {count && <Label>{count} usuários</Label>}
-      <Button onClick={handleUpload} className="w-full">
+      <Button onClick={handleUpload} className="w-full" disabled={!isAdmin}>
         Registrar Usuários
       </Button>
     </div>
@@ -234,6 +262,16 @@ function UsersRegistered() {
 }
 
 function IssueToken() {
+  const { address } = useAccount();
+
+  const { data: isAdminContract } = useReadContract({
+    address: contractAddr,
+    abi: contract.abi,
+    account: address,
+    functionName: "isAdmin",
+  });
+
+  const isAdmin = isAdminContract as boolean;
   const [amount, setAmount] = useState("");
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const { writeContract } = useWriteContract();
@@ -287,7 +325,11 @@ function IssueToken() {
         value={amount}
         onChange={(e) => setAmount(e.target.value)}
       />
-      <Button onClick={() => handleIssueToken()} className="w-full">
+      <Button
+        onClick={() => handleIssueToken()}
+        className="w-full"
+        disabled={!isAdmin}
+      >
         Emitir Tokens
       </Button>
     </div>
@@ -295,6 +337,16 @@ function IssueToken() {
 }
 
 function ToggleVoting() {
+  const { address } = useAccount();
+
+  const { data: isAdminContract } = useReadContract({
+    address: contractAddr,
+    abi: contract.abi,
+    account: address,
+    functionName: "isAdmin",
+  });
+
+  const isAdmin = isAdminContract as boolean;
   const { writeContract } = useWriteContract();
   const { data: isVotingActive } = useReadContract({
     address: contractAddr,
@@ -317,6 +369,7 @@ function ToggleVoting() {
         id="voting-status"
         checked={isVotingActive as boolean}
         onCheckedChange={toggleVotingStatus}
+        disabled={!isAdmin}
       />
       <Label htmlFor="voting-status">
         Sistema de Votação {isVotingActive ? "Ativo" : "Inativo"}
