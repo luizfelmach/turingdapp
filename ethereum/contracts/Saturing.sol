@@ -26,6 +26,9 @@ contract Saturing is ERC20 {
     mapping(address => bool) public usersRegistered;
     mapping(address => mapping(string => bool)) public voted;
 
+    event BalanceUpdated(address indexed user, uint256 newBalance);
+    event UserRegistered(address indexed user, string codename);
+
     constructor() ERC20("SATURING", "STU") {
         owner = msg.sender;
         votingActive = true;
@@ -44,6 +47,8 @@ contract Saturing is ERC20 {
 
         usersRegistered[addr] = true;
         users.push(User(addr, codename));
+
+        emit UserRegistered(addr, codename);
     }
 
     function registerUsers(
@@ -73,6 +78,7 @@ contract Saturing is ERC20 {
             codenames[codename] = addr;
             usersRegistered[addr] = true;
             users.push(User(addr, codename));
+            emit UserRegistered(addr, codename);
         }
     }
 
@@ -114,6 +120,7 @@ contract Saturing is ERC20 {
         address recipient = codenames[codename];
         require(recipient != address(0), "Codinome nao registrado.");
         _mint(recipient, amount);
+        emit BalanceUpdated(recipient, balanceOf(recipient));
     }
 
     function vote(
@@ -133,7 +140,9 @@ contract Saturing is ERC20 {
         voted[msg.sender][codename] = true;
 
         _mint(user, amount);
+        emit BalanceUpdated(user, balanceOf(user));
         _mint(msg.sender, 2 * 10 ** 17);
+        emit BalanceUpdated(msg.sender, balanceOf(msg.sender));
     }
 
     function isAdmin() public view returns (bool) {

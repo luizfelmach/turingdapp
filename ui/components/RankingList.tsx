@@ -10,13 +10,35 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { contractAddr, UserWithBalance } from "@/lib/config";
-import { useReadContract } from "wagmi";
+import { useReadContract, useWatchContractEvent } from "wagmi";
 
 export default function RankingList() {
-  const { data: usersContract, isLoading: loadingUsers } = useReadContract({
+  const {
+    data: usersContract,
+    isLoading: loadingUsers,
+    refetch,
+  } = useReadContract({
     address: contractAddr,
     abi: contract.abi,
     functionName: "getUsersWithBalance",
+  });
+
+  useWatchContractEvent({
+    abi: contract.abi,
+    address: contractAddr,
+    eventName: "UserRegistered",
+    onLogs() {
+      refetch();
+    },
+  });
+
+  useWatchContractEvent({
+    abi: contract.abi,
+    address: contractAddr,
+    eventName: "BalanceUpdated",
+    onLogs() {
+      refetch();
+    },
   });
 
   if (loadingUsers) return null;

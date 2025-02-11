@@ -5,7 +5,12 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useAccount, useReadContract, useWriteContract } from "wagmi";
+import {
+  useAccount,
+  useReadContract,
+  useWatchContractEvent,
+  useWriteContract,
+} from "wagmi";
 import { contractAddr, User } from "@/lib/config";
 import { EmptyVotingState } from "./EmptyVotingState";
 
@@ -50,6 +55,24 @@ export default function VotingList() {
       }
     );
   }
+
+  useWatchContractEvent({
+    abi: contract.abi,
+    address: contractAddr,
+    eventName: "UserRegistered",
+    onLogs() {
+      refetch();
+    },
+  });
+
+  useWatchContractEvent({
+    abi: contract.abi,
+    address: contractAddr,
+    eventName: "BalanceUpdated",
+    onLogs() {
+      refetch();
+    },
+  });
 
   if (!isVotingActive && !loadingVotingActive) {
     return (

@@ -16,7 +16,12 @@ import {
 } from "@/components/ui/table";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { useAccount, useReadContract, useWriteContract } from "wagmi";
+import {
+  useAccount,
+  useReadContract,
+  useWatchContractEvent,
+  useWriteContract,
+} from "wagmi";
 import { contractAddr, User } from "@/lib/config";
 import {
   Dialog,
@@ -233,10 +238,23 @@ function ImportUsersCSV() {
 }
 
 function UsersRegistered() {
-  const { data: usersContract, isLoading: loadingUsers } = useReadContract({
+  const {
+    data: usersContract,
+    isLoading: loadingUsers,
+    refetch,
+  } = useReadContract({
     address: contractAddr,
     abi: contract.abi,
     functionName: "getUsers",
+  });
+
+  useWatchContractEvent({
+    abi: contract.abi,
+    address: contractAddr,
+    eventName: "UserRegistered",
+    onLogs() {
+      refetch();
+    },
   });
 
   const users = usersContract as User[];

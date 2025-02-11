@@ -9,6 +9,7 @@ import AdminPanel from "@/components/AdminPanel";
 import WalletConnect from "@/components/WalletConnect";
 import { useAccount } from "wagmi";
 import WelcomeScreen from "@/components/WelcomeScreen";
+import Listener from "@/components/Listener";
 
 export default function Home() {
   const { isConnected } = useAccount();
@@ -19,6 +20,7 @@ export default function Home() {
 
   return (
     <div className="container mx-auto p-4 max-w-5xl">
+      <Listener />
       <Card className="mb-8">
         <CardHeader>
           <CardTitle>Turing Dapp</CardTitle>
